@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #1e3c72, #2a5298); 
+            min-height: 100vh; display: flex; justify-content: center; padding: 20px; color: white;
+        }
+        .container { background: rgba(0, 0, 0, 0.6); padding: 30px; border-radius: 20px; width: 100%; max-width: 500px; backdrop-filter: blur(10px); }
+        h2 { text-align: center; margin-bottom: 20px; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; }
+        button { background: #ff9800; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #e68900; }
+        .nav-links { text-align: center; margin-top: 15px; }
+        .nav-links a { color: #ffeb3b; text-decoration: none; margin: 0 10px; }
+        #map { height: 300px; margin-top: 20px; border-radius: 10px; }
+        .history { margin-top: 20px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Weather & Map Flow</h2>
+
+    {% if user.is_authenticated %}
+        <p style="text-align:center;">Welcome, {{ user.username }}! <a href="{% url 'logout' %}" style="color:#ff5252;">(Logout)</a></p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="query" placeholder="Enter City..." required>
+            <select name="category">
+                <option value="Weather">Weather Report</option>
+                <option value="Map">Live Map</option>
+            </select>
+            <button type="submit">Get Insights</button>
+        </form>
+
+        {% if weather %}
+            <div style="text-align:center; margin-top:20px;">
+                <h3>Result: {{ weather.city }}</h3>
+                {% if weather.is_map %}
+                    <div id="map"></div>
+                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                    <script>
+                        var map = L.map('map').setView([{{ weather.lat }}, {{ weather.lon }}], 12);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                        L.marker([{{ weather.lat }}, {{ weather.lon }}]).addTo(map).bindPopup("{{ weather.city }}").openPopup();
+                    </script>
+                {% else %}
+                    <p>🌡️ Temp: {{ weather.temperature }}°C | ☁️ {{ weather.description }}</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="history">
+            <h4>Recent Searches</h4>
+            {% for item in recent_searches %}
+                <p>{{ item.city_name }} - {{ item.temperature }}°C</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="nav-links">
+            <p>Please login to use the dashboard.</p>
+            <a href="{% url 'user_login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
