@@ -56,6 +56,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'weather.urls'
+LOGIN_URL='user_login'
 
 TEMPLATES = [
     {

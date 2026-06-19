@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<body>
-    <h2>Create New Account</h2>
+<style>
+    /* Login जैसा ही स्टाइल इस्तेमाल करें */
+    body { background: #1e3c72; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .card { background: rgba(0,0,0,0.5); padding: 30px; border-radius: 15px; width: 300px; text-align: center; }
+</style>
+
+<div class="card">
+    <h2>Create Account</h2>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Register</button>
     </form>
-    <p>Already have an account? <a href="{% url 'user_login' %}">Login here</a></p>
-</body>
-</html>
+</div>

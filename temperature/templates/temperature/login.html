@@ -1,0 +1,16 @@
+<style>
+    body { background: #1e3c72; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+    .card { background: rgba(0,0,0,0.5); padding: 30px; border-radius: 15px; width: 300px; text-align: center; }
+    input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
+    button { width: 95%; padding: 10px; background: #ff9800; border: none; color: white; cursor: pointer; border-radius: 5px; }
+</style>
+
+<div class="card">
+    <h2>Login</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login Now</button>
+    </form>
+    <p>New user? <a href="{% url 'register' %}" style="color:#ffeb3b;">Register here</a></p>
+</div>
